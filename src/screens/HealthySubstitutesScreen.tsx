@@ -1,8 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, ActivityIndicator, FlatList, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  ActivityIndicator,
+  FlatList,
+  StyleSheet
+} from "react-native";
 import { customSubstitutions } from "../constants/customSubstitutions";
+import colors from "../../theme/colors"; // ✅ centralized theme
 
-const SPOONACULAR_API_KEY = "98affbdf667c43edad241add2a4be640"; // ✅ Your real API key
+const SPOONACULAR_API_KEY = "98affbdf667c43edad241add2a4be640";
 
 export default function HealthySubstitutesScreen({ route }: any) {
   const { ingredientName } = route.params;
@@ -11,42 +18,37 @@ export default function HealthySubstitutesScreen({ route }: any) {
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
 
-  const backgroundColor = "#2E3A24";
-  const cardBackground = "#4A5E3D";
-  const textColor = "#F0F3F4";
-  const accentColor = "#6B8E23";
-
   useEffect(() => {
     checkCustomSubstitutes();
   }, []);
 
   const checkCustomSubstitutes = async () => {
-  const lowerIngredient = ingredientName.toLowerCase().trim();
+    const lowerIngredient = ingredientName.toLowerCase().trim();
 
-  let found = false;
-  for (const categoryKey in customSubstitutions) {
-    const category = customSubstitutions[categoryKey as keyof typeof customSubstitutions];
-    for (const ing in category.ingredients) {
-      const lowerIng = ing.toLowerCase().trim();
-      if (
-        lowerIngredient.includes(lowerIng) ||
-        lowerIng.includes(lowerIngredient)
-      ) {
-        setCategoryName(category.name);
-        setSubstitutes(category.ingredients[ing]);
-        found = true;
-        break;
+    let found = false;
+    for (const categoryKey in customSubstitutions) {
+      const category = customSubstitutions[categoryKey as keyof typeof customSubstitutions];
+      for (const ing in category.ingredients) {
+        const lowerIng = ing.toLowerCase().trim();
+        if (
+          lowerIngredient.includes(lowerIng) ||
+          lowerIng.includes(lowerIngredient)
+        ) {
+          setCategoryName(category.name);
+          setSubstitutes(category.ingredients[ing as keyof typeof category.ingredients]);
+          found = true;
+          break;
+        }
       }
+      if (found) break;
     }
-    if (found) break;
-  }
 
-  if (!found) {
-    fetchSpoonacularSubstitutes();
-  } else {
-    setLoading(false);
-  }
-};
+    if (!found) {
+      fetchSpoonacularSubstitutes();
+    } else {
+      setLoading(false);
+    }
+  };
 
   const fetchSpoonacularSubstitutes = async () => {
     try {
@@ -69,21 +71,21 @@ export default function HealthySubstitutesScreen({ route }: any) {
 
   if (loading) {
     return (
-      <View style={[styles.loaderContainer, { backgroundColor: backgroundColor }]}>
-        <ActivityIndicator size="large" color={accentColor} />
+      <View style={[styles.loaderContainer, { backgroundColor: colors.background }]}>
+        <ActivityIndicator size="large" color={colors.accent} />
       </View>
     );
   }
 
   return (
-    <View style={[styles.container, { backgroundColor: backgroundColor }]}>
-      <Text style={[styles.title, { color: textColor }]}>Healthy Substitutes for:</Text>
-      <Text style={[styles.ingredientName, { color: accentColor }]}>{ingredientName}</Text>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <Text style={[styles.title, { color: colors.text }]}>Healthy Substitutes for:</Text>
+      <Text style={[styles.ingredientName, { color: colors.accent }]}>{ingredientName}</Text>
 
       {substitutes.length > 0 ? (
         <>
           {categoryName && (
-            <Text style={[styles.categoryName, { color: "#A9DFBF" }]}>
+            <Text style={[styles.categoryName, { color: colors.badge1 }]}>
               Category: {categoryName}
             </Text>
           )}
@@ -91,14 +93,14 @@ export default function HealthySubstitutesScreen({ route }: any) {
             data={substitutes}
             keyExtractor={(item, index) => index.toString()}
             renderItem={({ item }) => (
-              <View style={[styles.substituteCard, { backgroundColor: cardBackground }]}>
-                <Text style={[styles.substituteText, { color: textColor }]}>{item}</Text>
+              <View style={[styles.substituteCard, { backgroundColor: colors.card }]}>
+                <Text style={[styles.substituteText, { color: colors.text }]}>{item}</Text>
               </View>
             )}
           />
         </>
       ) : (
-        <Text style={[styles.message, { color: textColor }]}>{message}</Text>
+        <Text style={[styles.message, { color: colors.text }]}>{message}</Text>
       )}
     </View>
   );
@@ -106,12 +108,39 @@ export default function HealthySubstitutesScreen({ route }: any) {
 
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 20 },
-  loaderContainer: { flex: 1, justifyContent: "center", alignItems: "center" },
-  title: { fontSize: 22, fontWeight: "bold", textAlign: "center", marginBottom: 10 },
-  ingredientName: { fontSize: 20, textAlign: "center", marginBottom: 10 },
-  categoryName: { fontSize: 18, textAlign: "center", marginBottom: 10 },
-  substituteCard: { padding: 15, marginVertical: 8, borderRadius: 10 },
-  substituteText: { fontSize: 18, textAlign: "center" },
-  message: { fontSize: 16, textAlign: "center", marginTop: 20 }
+  loaderContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  title: {
+    fontSize: 22,
+    fontWeight: "bold",
+    textAlign: "center",
+    marginBottom: 10
+  },
+  ingredientName: {
+    fontSize: 20,
+    textAlign: "center",
+    marginBottom: 10
+  },
+  categoryName: {
+    fontSize: 18,
+    textAlign: "center",
+    marginBottom: 10
+  },
+  substituteCard: {
+    padding: 15,
+    marginVertical: 8,
+    borderRadius: 10
+  },
+  substituteText: {
+    fontSize: 18,
+    textAlign: "center"
+  },
+  message: {
+    fontSize: 16,
+    textAlign: "center",
+    marginTop: 20
+  }
 });
-

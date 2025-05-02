@@ -1,5 +1,6 @@
 import React from "react";
 import { View, Text, TouchableOpacity, Image, StyleSheet } from "react-native";
+import colors from "../../theme/colors"; // ✅ centralized color palette
 
 const antiInflammatorySuperfoods = [
   "turmeric",
@@ -42,13 +43,32 @@ export default function RecipeCard({ recipe, onPress }: RecipeCardProps) {
       <View style={styles.content}>
         <Text style={styles.title}>{recipe.title}</Text>
 
-        {/* Badges */}
         <View style={styles.badgesContainer}>
-          {recipe.glutenFree && <Text style={[styles.badge, { backgroundColor: "#81ecec" }]}>Gluten-Free</Text>}
-          {recipe.dairyFree && <Text style={[styles.badge, { backgroundColor: "#fab1a0" }]}>Dairy-Free</Text>}
-          {recipe.vegan && <Text style={[styles.badge, { backgroundColor: "#55efc4" }]}>Vegan</Text>}
-          {recipe.veryHealthy && <Text style={[styles.badge, { backgroundColor: "#74b9ff" }]}>Very Healthy</Text>}
-          {isAntiInflammatory && <Text style={[styles.badge, { backgroundColor: "#ffeaa7" }]}>Anti-Inflammatory</Text>} {/* ✅ New Badge */}
+          {recipe.glutenFree && (
+            <Text style={[styles.badge, { backgroundColor: colors.badge1 }]}>
+              Gluten-Free
+            </Text>
+          )}
+          {recipe.dairyFree && (
+            <Text style={[styles.badge, { backgroundColor: colors.badge2 }]}>
+              Dairy-Free
+            </Text>
+          )}
+          {recipe.vegan && (
+            <Text style={[styles.badge, { backgroundColor: colors.badge3 }]}>
+              Vegan
+            </Text>
+          )}
+          {recipe.veryHealthy && (
+            <Text style={[styles.badge, { backgroundColor: colors.badge4 }]}>
+              Very Healthy
+            </Text>
+          )}
+          {isAntiInflammatory && (
+            <Text style={[styles.badge, { backgroundColor: colors.badge5 }]}>
+              Anti-Inflammatory
+            </Text>
+          )}
         </View>
       </View>
     </TouchableOpacity>
@@ -58,39 +78,44 @@ export default function RecipeCard({ recipe, onPress }: RecipeCardProps) {
 const styles = StyleSheet.create({
   card: {
     flexDirection: "row",
-    padding: 10,
+    padding: 12,
     alignItems: "center",
-    marginBottom: 10,
-    backgroundColor: "#f9f9f9",
-    borderRadius: 10
+    marginBottom: 12,
+    backgroundColor: colors.card,
+    borderRadius: 12,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2
   },
   image: {
     width: 80,
     height: 80,
-    borderRadius: 8,
-    marginRight: 10
+    borderRadius: 10,
+    marginRight: 12
   },
   content: {
     flex: 1
   },
   title: {
     fontSize: 16,
-    fontWeight: "bold",
-    marginBottom: 5
+    fontWeight: "600",
+    marginBottom: 6,
+    color: colors.text
   },
   badgesContainer: {
     flexDirection: "row",
     flexWrap: "wrap"
   },
   badge: {
-    fontSize: 10,
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 10,
+    fontSize: 11,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
     overflow: "hidden",
-    marginRight: 5,
-    marginTop: 5,
-    color: "#2d3436"
+    marginRight: 6,
+    marginTop: 4,
+    color: colors.text
   }
 });
-

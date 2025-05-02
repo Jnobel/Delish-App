@@ -1,6 +1,17 @@
 // src/constants/customSubstitutions.ts
 
-export const customSubstitutions = {
+export interface SubstitutionCategory {
+  name: string;
+  ingredients: {
+    [key: string]: string[]; // ✅ index signature for TS compatibility
+  };
+}
+
+export type SubstitutionMap = {
+  [category: string]: SubstitutionCategory;
+};
+
+export const customSubstitutions: SubstitutionMap = {
   oilsFats: {
     name: "Oils & Fats",
     ingredients: {
@@ -82,16 +93,16 @@ export const customSubstitutions = {
     name: "Natural Food Colorings",
     ingredients: {
       "food coloring": [
-      "Beetroot powder",
-      "Pomegranate juice",
-      "Carrot juice",
-      "Turmeric",
-      "Spirulina powder",
-      "Matcha powder",
-      "Butterfly pea flower tea",
-      "Blueberry juice",
-      "Coffee or cocoa powder"
-    ],
+        "Beetroot powder",
+        "Pomegranate juice",
+        "Carrot juice",
+        "Turmeric",
+        "Spirulina powder",
+        "Matcha powder",
+        "Butterfly pea flower tea",
+        "Blueberry juice",
+        "Coffee or cocoa powder"
+      ],
       "red 40": ["Beetroot powder", "Pomegranate juice", "Strawberry puree"],
       "yellow 5": ["Turmeric", "Saffron", "Annatto seeds"],
       "blue 1": ["Blue butterfly pea flower tea", "Red cabbage (boiled with baking soda)"],

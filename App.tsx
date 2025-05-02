@@ -1,5 +1,5 @@
 import React from "react";
-import { NavigationContainer, DarkTheme } from "@react-navigation/native";
+import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
@@ -8,20 +8,21 @@ import SplashScreen from "./src/screens/SplashScreen";
 import HomeScreen from "./src/screens/HomeScreen";
 import RecipeDetailScreen from "./src/screens/RecipeDetailScreen";
 import HealthySubstitutesScreen from "./src/screens/HealthySubstitutesScreen";
+import colors from "./theme/colors"; // ✅ use centralized theme
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
-// Dark theme palette
-const darkTheme = {
-  ...DarkTheme,
+// 🍃 Fresh & Clean Theme (centralized)
+const freshTheme = {
+  ...DefaultTheme,
   colors: {
-    ...DarkTheme.colors,
-    background: "#2E3A24",
-    card: "#4A5E3D",
-    text: "#F0F3F4",
-    border: "#4A5E3D",
-    primary: "#6B8E23"
+    ...DefaultTheme.colors,
+    background: colors.background,
+    card: colors.card,
+    text: colors.text,
+    border: "#E0E0E0",
+    primary: colors.accent
   }
 };
 
@@ -42,9 +43,12 @@ function MainTabs() {
     <Tab.Navigator
       screenOptions={({ route }) => ({
         headerShown: false,
-        tabBarStyle: { backgroundColor: "#2E3A24", borderTopColor: "#4A5E3D" },
-        tabBarActiveTintColor: "#6B8E23",
-        tabBarInactiveTintColor: "#A9DFBF",
+        tabBarStyle: {
+          backgroundColor: colors.navBar,
+          borderTopColor: colors.card
+        },
+        tabBarActiveTintColor: colors.navIcon,
+        tabBarInactiveTintColor: colors.navInactive,
         tabBarIcon: ({ color, size }) => {
           let iconName: string = "home-outline";
           if (route.name === "HomeTab") {
@@ -61,7 +65,7 @@ function MainTabs() {
 
 export default function App() {
   return (
-    <NavigationContainer theme={darkTheme}>
+    <NavigationContainer theme={freshTheme}>
       <Stack.Navigator initialRouteName="Splash" screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Splash" component={SplashScreen} />
         <Stack.Screen name="HomeMain" component={MainTabs} />
@@ -69,6 +73,3 @@ export default function App() {
     </NavigationContainer>
   );
 }
-
-
-

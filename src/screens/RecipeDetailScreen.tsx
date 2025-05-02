@@ -1,19 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, ActivityIndicator, ScrollView, Image, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  ActivityIndicator,
+  ScrollView,
+  Image,
+  StyleSheet,
+  TouchableOpacity
+} from "react-native";
 import { customSubstitutions } from "../constants/customSubstitutions";
+import colors from "../../theme/colors"; // ✅ import centralized theme
 
-const SPOONACULAR_API_KEY = "98affbdf667c43edad241add2a4be640"; // ✅ Your real API key
+const SPOONACULAR_API_KEY = "98affbdf667c43edad241add2a4be640";
 
 export default function RecipeDetailScreen({ route, navigation }: any) {
   const { recipeId } = route.params;
   const [recipe, setRecipe] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-
-  const backgroundColor = "#2E3A24";
-  const cardBackground = "#4A5E3D";
-  const textColor = "#F0F3F4";
-  const accentColor = "#6B8E23";
-  const errorColor = "red";
 
   useEffect(() => {
     fetchRecipeDetails();
@@ -34,21 +37,23 @@ export default function RecipeDetailScreen({ route, navigation }: any) {
   };
 
   const findUnhealthyIngredient = (ingredient: string): string | null => {
-    const lowerIngredient = ingredient.toLowerCase();
-    const ingredientWords = lowerIngredient.split(/\s|,|-/);
-
+    const lowerIngredient = ingredient.toLowerCase().trim();
+  
     for (const categoryKey in customSubstitutions) {
       const category = customSubstitutions[categoryKey as keyof typeof customSubstitutions];
-      for (const unhealthyIngredient in category.ingredients) {
-        const lowerUnhealthy = unhealthyIngredient.toLowerCase();
+  
+      for (const key in category.ingredients) {
+        const lowerKey = key.toLowerCase().trim();
+  
         if (
-          ingredientWords.includes(lowerUnhealthy) || 
-          lowerUnhealthy.includes(lowerIngredient) // allow slight flexibility
+          lowerIngredient.includes(lowerKey) || // ✅ match inside ingredient line
+          lowerKey.includes(lowerIngredient)    // ✅ inverse match for short entries like "dye"
         ) {
-          return unhealthyIngredient;
+          return key;
         }
       }
     }
+  
     return null;
   };
 
@@ -61,51 +66,55 @@ export default function RecipeDetailScreen({ route, navigation }: any) {
 
   if (loading) {
     return (
-      <View style={[styles.loaderContainer, { backgroundColor: backgroundColor }]}>
-        <ActivityIndicator size="large" color={accentColor} />
+      <View style={[styles.loaderContainer, { backgroundColor: colors.background }]}>
+        <ActivityIndicator size="large" color={colors.accent} />
       </View>
     );
   }
 
   if (!recipe) {
     return (
-      <View style={[styles.container, { backgroundColor: backgroundColor }]}>
-        <Text style={{ color: textColor }}>Recipe not found.</Text>
+      <View style={[styles.container, { backgroundColor: colors.background }]}>
+        <Text style={{ color: colors.text }}>Recipe not found.</Text>
       </View>
     );
   }
 
   return (
-    <ScrollView style={[styles.container, { backgroundColor: backgroundColor }]}>
+    <ScrollView style={[styles.container, { backgroundColor: colors.background }]}>
       {recipe.image && <Image source={{ uri: recipe.image }} style={styles.image} />}
 
-      <Text style={[styles.title, { color: textColor }]}>{recipe.title}</Text>
+      <Text style={[styles.title, { color: colors.text }]}>{recipe.title}</Text>
 
-      <Text style={[styles.sectionHeader, { color: accentColor }]}>Ingredients</Text>
-      {recipe.extendedIngredients && recipe.extendedIngredients.map((ingredient: any, index: number) => {
-        const matched = findUnhealthyIngredient(ingredient.original);
-        const isUnhealthy = matched !== null;
-        return (
-          <TouchableOpacity key={index} onPress={() => handleIngredientPress(ingredient.original)}>
-            <Text
-              style={[
-                styles.ingredient,
-                isUnhealthy && styles.unhealthyIngredient
-              ]}
-            >
-              {ingredient.original}
-            </Text>
-          </TouchableOpacity>
-        );
-      })}
+      <Text style={[styles.sectionHeader, { color: colors.accent }]}>Ingredients</Text>
+      {recipe.extendedIngredients &&
+        recipe.extendedIngredients.map((ingredient: any, index: number) => {
+          const matched = findUnhealthyIngredient(ingredient.original);
+          const isUnhealthy = matched !== null;
 
-      <Text style={[styles.sectionHeader, { color: accentColor }]}>Instructions</Text>
+          return (
+            <TouchableOpacity key={index} onPress={() => handleIngredientPress(ingredient.original)}>
+              <Text
+                style={[
+                  styles.ingredient,
+                  isUnhealthy ? { color: colors.error } : { color: colors.text }
+                ]}
+              >
+                {ingredient.original}
+              </Text>
+            </TouchableOpacity>
+          );
+        })}
+
+      <Text style={[styles.sectionHeader, { color: colors.accent }]}>Instructions</Text>
       {recipe.instructions ? (
-        <Text style={[styles.instructions, { color: textColor }]}>
-          {recipe.instructions.replace(/<[^>]+>/g, '')} {/* Clean any HTML tags */}
+        <Text style={[styles.instructions, { color: colors.text }]}>
+          {recipe.instructions.replace(/<[^>]+>/g, '')}
         </Text>
       ) : (
-        <Text style={[styles.instructions, { color: textColor }]}>No instructions available.</Text>
+        <Text style={[styles.instructions, { color: colors.text }]}>
+          No instructions available.
+        </Text>
       )}
     </ScrollView>
   );
@@ -113,12 +122,40 @@ export default function RecipeDetailScreen({ route, navigation }: any) {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  loaderContainer: { flex: 1, justifyContent: "center", alignItems: "center" },
-  image: { width: "100%", height: 200 },
-  title: { fontSize: 24, fontWeight: "bold", textAlign: "center", marginVertical: 10 },
-  sectionHeader: { fontSize: 20, fontWeight: "bold", marginLeft: 10, marginVertical: 10 },
-  ingredient: { fontSize: 16, marginLeft: 15, marginBottom: 8 },
-  unhealthyIngredient: { color: "red", fontWeight: "bold" },
-  instructions: { fontSize: 16, paddingHorizontal: 15, marginBottom: 20 },
+  loaderContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  image: {
+    width: "100%",
+    height: 200,
+    borderBottomLeftRadius: 16,
+    borderBottomRightRadius: 16
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+    textAlign: "center",
+    marginVertical: 10
+  },
+  sectionHeader: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginLeft: 10,
+    marginVertical: 10
+  },
+  ingredient: {
+    fontSize: 16,
+    marginLeft: 15,
+    marginBottom: 8
+  },
+  unhealthyIngredient: {
+    fontWeight: "bold"
+  },
+  instructions: {
+    fontSize: 16,
+    paddingHorizontal: 15,
+    marginBottom: 20
+  }
 });
-

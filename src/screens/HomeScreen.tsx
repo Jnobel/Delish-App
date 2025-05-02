@@ -1,17 +1,23 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TextInput, TouchableOpacity, FlatList, ScrollView, Image, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  FlatList,
+  ScrollView,
+  Image,
+  StyleSheet
+} from "react-native";
 
-const SPOONACULAR_API_KEY = "98affbdf667c43edad241add2a4be640"; // ✅ Your real API key
+import colors from "../../theme/colors"; // 🌈 centralized color palette
+
+const SPOONACULAR_API_KEY = "98affbdf667c43edad241add2a4be640";
 
 export default function HomeScreen({ navigation }: any) {
   const [searchTerm, setSearchTerm] = useState("");
   const [recipes, setRecipes] = useState([]);
   const [topPicks, setTopPicks] = useState([]);
-
-  const backgroundColor = "#2E3A24";
-  const cardBackground = "#4A5E3D";
-  const accentColor = "#6B8E23";
-  const textColor = "#F0F3F4";
 
   const cuisines = [
     "Mexican", "American", "French", "Italian", "Indian",
@@ -78,7 +84,7 @@ export default function HomeScreen({ navigation }: any) {
   const handleDietarySearch = async (diet: any) => {
     try {
       let url = `https://api.spoonacular.com/recipes/complexSearch?number=10&addRecipeInformation=true&apiKey=${SPOONACULAR_API_KEY}`;
-      
+
       if (diet.type === "diet") {
         url += `&diet=${encodeURIComponent(diet.value)}`;
       } else if (diet.type === "intolerance") {
@@ -108,60 +114,58 @@ export default function HomeScreen({ navigation }: any) {
   };
 
   const renderRecipe = ({ item }: any) => (
-    <TouchableOpacity style={[styles.recipeCard, { backgroundColor: cardBackground }]} onPress={() => navigation.navigate("RecipeDetail", { recipeId: item.id })}>
+    <TouchableOpacity
+      style={[styles.recipeCard, { backgroundColor: colors.card }]}
+      onPress={() => navigation.navigate("RecipeDetail", { recipeId: item.id })}
+    >
       <Image source={{ uri: item.image }} style={styles.recipeImage} />
-      <Text style={[styles.recipeTitle, { color: textColor }]}>{item.title}</Text>
+      <Text style={[styles.recipeTitle, { color: colors.text }]}>{item.title}</Text>
     </TouchableOpacity>
   );
 
   return (
-    <ScrollView style={[styles.container, { backgroundColor: backgroundColor }]}>
-      {/* Header */}
-      <Text style={[styles.header, { color: textColor }]}>Delish </Text>
+    <ScrollView style={[styles.container, { backgroundColor: colors.background }]}>
+      <Text style={[styles.header, { color: colors.text }]}>Delish</Text>
 
-      {/* Manual Search */}
       <View style={styles.searchContainer}>
         <TextInput
-          style={[styles.searchInput, { backgroundColor: "#A9DFBF", color: "#2d3436" }]}
+          style={[styles.searchInput, { backgroundColor: colors.searchBar, color: colors.text }]}
           placeholder="Search any recipe..."
-          placeholderTextColor="#888"
+          placeholderTextColor={colors.text + "99"}
           value={searchTerm}
           onChangeText={setSearchTerm}
         />
-        <TouchableOpacity style={[styles.searchButton, { backgroundColor: accentColor }]} onPress={handleManualSearch}>
+        <TouchableOpacity style={[styles.searchButton, { backgroundColor: colors.accent }]} onPress={handleManualSearch}>
           <Text style={{ color: "#fff" }}>Search</Text>
         </TouchableOpacity>
       </View>
 
-      {/* Daily Inspiration */}
-      <Text style={[styles.subHeader, { color: textColor }]}>Daily Inspiration</Text>
+      <Text style={[styles.subHeader, { color: colors.text }]}>Daily Inspiration</Text>
       <FlatList
         data={recipes}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item: any) => item.id.toString()}
         renderItem={renderRecipe}
         horizontal
         showsHorizontalScrollIndicator={false}
         style={{ marginBottom: 10 }}
       />
 
-      {/* Top Picks */}
-      <Text style={[styles.subHeader, { color: textColor }]}>Top Picks</Text>
+      <Text style={[styles.subHeader, { color: colors.text }]}>Top Picks</Text>
       <FlatList
         data={topPicks}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item: any) => item.id.toString()}
         renderItem={renderRecipe}
         horizontal
         showsHorizontalScrollIndicator={false}
         style={{ marginBottom: 10 }}
       />
 
-      {/* Dietary Preferences */}
-      <Text style={[styles.subHeader, { color: textColor }]}>Dietary Preferences</Text>
+      <Text style={[styles.subHeader, { color: colors.text }]}>Dietary Preferences</Text>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.quickSearchContainer}>
         {dietaryPreferences.map((diet, index) => (
           <TouchableOpacity
             key={index}
-            style={[styles.quickButton, { backgroundColor: accentColor }]}
+            style={[styles.quickButton, { backgroundColor: colors.accent }]}
             onPress={() => handleDietarySearch(diet)}
           >
             <Text style={{ color: "#fff" }}>{diet.label}</Text>
@@ -169,13 +173,12 @@ export default function HomeScreen({ navigation }: any) {
         ))}
       </ScrollView>
 
-      {/* Global Cuisines */}
-      <Text style={[styles.subHeader, { color: textColor }]}>Global Cuisines</Text>
+      <Text style={[styles.subHeader, { color: colors.text }]}>Global Cuisines</Text>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.quickSearchContainer}>
         {cuisines.map((cuisine, index) => (
           <TouchableOpacity
             key={index}
-            style={[styles.quickButton, { backgroundColor: accentColor }]}
+            style={[styles.quickButton, { backgroundColor: colors.accent }]}
             onPress={() => handleCuisineSearch(cuisine)}
           >
             <Text style={{ color: "#fff" }}>{cuisine}</Text>
@@ -188,16 +191,61 @@ export default function HomeScreen({ navigation }: any) {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  header: { fontSize: 24, fontWeight: "bold", textAlign: "center", marginVertical: 10 },
-  searchContainer: { flexDirection: "row", paddingHorizontal: 10, marginBottom: 10 },
-  searchInput: { flex: 1, borderRadius: 8, paddingHorizontal: 10, marginRight: 10 },
-  searchButton: { paddingVertical: 10, paddingHorizontal: 20, borderRadius: 8, justifyContent: "center", alignItems: "center" },
-  subHeader: { fontSize: 20, fontWeight: "bold", marginLeft: 10, marginVertical: 10 },
-  recipeCard: { width: 150, marginHorizontal: 10, borderRadius: 8, overflow: "hidden" },
-  recipeImage: { width: "100%", height: 100, borderRadius: 8 },
-  recipeTitle: { width: 120, textAlign: "center", fontSize: 12, marginTop: 5 },
-  quickSearchContainer: { flexDirection: "row", paddingHorizontal: 10, marginBottom: 10 },
-  quickButton: { padding: 10, marginRight: 10, borderRadius: 20 },
+  header: {
+    fontSize: 24,
+    fontWeight: "bold",
+    textAlign: "center",
+    marginVertical: 10
+  },
+  searchContainer: {
+    flexDirection: "row",
+    paddingHorizontal: 10,
+    marginBottom: 10
+  },
+  searchInput: {
+    flex: 1,
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    marginRight: 10
+  },
+  searchButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  subHeader: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginLeft: 10,
+    marginVertical: 10
+  },
+  recipeCard: {
+    width: 150,
+    marginHorizontal: 10,
+    borderRadius: 8,
+    overflow: "hidden"
+  },
+  recipeImage: {
+    width: "100%",
+    height: 100,
+    borderRadius: 8
+  },
+  recipeTitle: {
+    width: 120,
+    textAlign: "center",
+    fontSize: 12,
+    marginTop: 5
+  },
+  quickSearchContainer: {
+    flexDirection: "row",
+    paddingHorizontal: 10,
+    marginBottom: 10
+  },
+  quickButton: {
+    padding: 10,
+    marginRight: 10,
+    borderRadius: 20
+  }
 });
-
-

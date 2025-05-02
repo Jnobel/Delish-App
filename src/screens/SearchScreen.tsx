@@ -1,16 +1,21 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, FlatList, Image, StyleSheet, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  FlatList,
+  Image,
+  StyleSheet,
+  ScrollView
+} from "react-native";
+import colors from "../../theme/colors"; // ✅ use centralized palette
 
-const SPOONACULAR_API_KEY = "98affbdf667c43edad241add2a4be640"; // ✅ Your real API key
+const SPOONACULAR_API_KEY = "98affbdf667c43edad241add2a4be640";
 
 export default function SearchScreen({ navigation }: any) {
   const [searchTerm, setSearchTerm] = useState("");
   const [recipes, setRecipes] = useState([]);
-
-  const backgroundColor = "#2E3A24";
-  const cardBackground = "#4A5E3D";
-  const accentColor = "#6B8E23";
-  const textColor = "#F0F3F4";
 
   const handleSearch = async () => {
     if (!searchTerm.trim()) return;
@@ -26,34 +31,38 @@ export default function SearchScreen({ navigation }: any) {
   };
 
   const renderRecipe = ({ item }: any) => (
-    <TouchableOpacity style={[styles.recipeCard, { backgroundColor: cardBackground }]} onPress={() => navigation.navigate("RecipeDetail", { recipeId: item.id })}>
+    <TouchableOpacity
+      style={[styles.recipeCard, { backgroundColor: colors.card }]}
+      onPress={() => navigation.navigate("RecipeDetail", { recipeId: item.id })}
+    >
       <Image source={{ uri: item.image }} style={styles.recipeImage} />
-      <Text style={[styles.recipeTitle, { color: textColor }]}>{item.title}</Text>
+      <Text style={[styles.recipeTitle, { color: colors.text }]}>{item.title}</Text>
     </TouchableOpacity>
   );
 
   return (
-    <ScrollView style={[styles.container, { backgroundColor: backgroundColor }]}>
-      <Text style={[styles.header, { color: textColor }]}>Search Recipes</Text>
+    <ScrollView style={[styles.container, { backgroundColor: colors.background }]}>
+      <Text style={[styles.header, { color: colors.text }]}>Search Recipes</Text>
 
-      {/* Search Bar */}
       <View style={styles.searchContainer}>
         <TextInput
-          style={[styles.searchInput, { backgroundColor: "#A9DFBF", color: "#2d3436" }]}
+          style={[styles.searchInput, { backgroundColor: colors.searchBar, color: colors.text }]}
           placeholder="Enter ingredient or recipe..."
           placeholderTextColor="#888"
           value={searchTerm}
           onChangeText={setSearchTerm}
         />
-        <TouchableOpacity style={[styles.searchButton, { backgroundColor: accentColor }]} onPress={handleSearch}>
+        <TouchableOpacity
+          style={[styles.searchButton, { backgroundColor: colors.accent }]}
+          onPress={handleSearch}
+        >
           <Text style={{ color: "#fff" }}>Search</Text>
         </TouchableOpacity>
       </View>
 
-      {/* Search Results */}
       <FlatList
         data={recipes}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item: any) => item.id.toString()}
         renderItem={renderRecipe}
         style={{ marginTop: 10 }}
       />
@@ -63,11 +72,52 @@ export default function SearchScreen({ navigation }: any) {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  header: { fontSize: 24, fontWeight: "bold", textAlign: "center", marginVertical: 10 },
-  searchContainer: { flexDirection: "row", paddingHorizontal: 10, marginBottom: 10 },
-  searchInput: { flex: 1, borderRadius: 8, paddingHorizontal: 10, marginRight: 10 },
-  searchButton: { paddingVertical: 10, paddingHorizontal: 20, borderRadius: 8, justifyContent: "center", alignItems: "center" },
-  recipeCard: { flexDirection: "row", padding: 10, alignItems: "center", marginBottom: 10, borderRadius: 10 },
-  recipeImage: { width: 80, height: 80, borderRadius: 8, marginRight: 10 },
-  recipeTitle: { fontSize: 16, flexShrink: 1 }
+  header: {
+    fontSize: 24,
+    fontWeight: "bold",
+    textAlign: "center",
+    marginVertical: 10
+  },
+  searchContainer: {
+    flexDirection: "row",
+    paddingHorizontal: 10,
+    marginBottom: 10
+  },
+  searchInput: {
+    flex: 1,
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    marginRight: 10
+  },
+  searchButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  recipeCard: {
+    flexDirection: "row",
+    padding: 12,
+    alignItems: "center",
+    marginHorizontal: 10,
+    marginBottom: 12,
+    borderRadius: 12,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2
+  },
+  recipeImage: {
+    width: 80,
+    height: 80,
+    borderRadius: 10,
+    marginRight: 12
+  },
+  recipeTitle: {
+    fontSize: 16,
+    fontWeight: "500",
+    flexShrink: 1
+  }
 });
