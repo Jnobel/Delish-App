@@ -152,6 +152,7 @@ Future Roadmap
 
 Authors & Acknowledgements
 Project Lead: Joshua Nobel
+https://github.com/Jnobel/Delish-App
 Thanks to the Mobile App Development course for the structure and support.
 
 
