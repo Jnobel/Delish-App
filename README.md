@@ -81,6 +81,31 @@ The Delish app was developed as a semester-long team project with the following 
 
 ---
 
+API Integration
+Spoonacular API
+
+---
+
+## 🔑 API Key Setup
+
+The Delish app requires a **Spoonacular API key** to fetch nutritional information and recipe data.
+
+### 👉 How to Get Your API Key
+
+1. Go to the Spoonacular developer portal:  
+   [https://spoonacular.com/food-api](https://spoonacular.com/food-api)
+
+2. Create a free account and log in.
+
+3. Subscribe to one of the available plans (free tier is available).
+
+4. Copy your API key from the dashboard.
+
+### 🔐 How to Use It
+
+1. Replace: const "OBTAIN_API_KEY_FROM https://spoonacular.com/food-api";;
+    in all screens with your actual API key
+
 ## 🛠 Installation & Setup
 
 ### 🔄 Prerequisites
@@ -113,8 +138,6 @@ On iOS simulator:
 npx expo run:ios
 
 
-API Integration
-Spoonacular API
 
 Used to fetch calorie count, macro breakdown, and ingredient substitutions
 
