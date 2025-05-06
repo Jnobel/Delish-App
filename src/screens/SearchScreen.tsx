@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import colors from "../../theme/colors"; // ✅ use centralized palette
 
-const SPOONACULAR_API_KEY = "98affbdf667c43edad241add2a4be640";
+const "OBTAIN_API_KEY_FROM https://spoonacular.com/food-api";;
 
 export default function SearchScreen({ navigation }: any) {
   const [searchTerm, setSearchTerm] = useState("");
