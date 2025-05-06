@@ -12,7 +12,7 @@ import {
 
 import colors from "../../theme/colors"; // 🌈 centralized color palette
 
-const SPOONACULAR_API_KEY = "98affbdf667c43edad241add2a4be640";
+const "OBTAIN_API_KEY_FROM https://spoonacular.com/food-api";;
 
 export default function HomeScreen({ navigation }: any) {
   const [searchTerm, setSearchTerm] = useState("");
